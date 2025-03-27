@@ -37,110 +37,32 @@ chmod +x mcp_manager.py
 
 ## Commands
 
-### List Servers
+| Command | Description | Usage |
+|---------|-------------|-------|
+| `list` | Display all configured MCP servers and their status | `./mcp_manager.py list` |
+| `start` | Start a specific MCP server by name | `./mcp_manager.py start [SERVER_NAME]` |
+| `stop` | Stop a running MCP server | `./mcp_manager.py stop [SERVER_NAME]` |
+| `restart` | Restart a specific MCP server | `./mcp_manager.py restart [SERVER_NAME]` |
+| `functions` | Display available functions for a specific server | `./mcp_manager.py functions [SERVER_NAME]` |
+| `start_all` | Start all configured MCP servers | `./mcp_manager.py start_all` |
+| `stop_all` | Stop all running MCP servers | `./mcp_manager.py stop_all` |
+| `available` | Display all servers available in the registry | `./mcp_manager.py available` |
+| `install` | Install a server from the registry | `./mcp_manager.py install [SERVER_NAME]` |
+| `install_git` | Install an MCP server from a Git repository | `./mcp_manager.py install_git [REPOSITORY_URL] [OPTIONS]` |
+| `uninstall` | Uninstall a specific MCP server | `./mcp_manager.py uninstall [SERVER_NAME]` |
+| `update` | Update the local registry cache | `./mcp_manager.py update` |
 
-Display all configured MCP servers and their current status.
+### Git Installation Options
 
-```bash
-./mcp_manager.py list
-```
-
-### Start Server
-
-Start a specific MCP server by name.
-
-```bash
-./mcp_manager.py start [SERVER_NAME]
-```
-
-### Stop Server
-
-Stop a running MCP server.
-
-```bash
-./mcp_manager.py stop [SERVER_NAME]
-```
-
-### Restart Server
-
-Restart a specific MCP server.
-
-```bash
-./mcp_manager.py restart [SERVER_NAME]
-```
-
-### View Server Functions
-
-Display available functions for a specific MCP server.
-
-```bash
-./mcp_manager.py functions [SERVER_NAME]
-```
-
-### Start All Servers
-
-Start all configured MCP servers.
-
-```bash
-./mcp_manager.py start_all
-```
-
-### Stop All Servers
-
-Stop all running MCP servers.
-
-```bash
-./mcp_manager.py stop_all
-```
-
-### List Available Servers
-
-Display all servers available in the registry.
-
-```bash
-./mcp_manager.py available
-```
-
-### Install Server
-
-Install a server from the registry.
-
-```bash
-./mcp_manager.py install [SERVER_NAME]
-```
-
-### Install from Git
-
-Install an MCP server directly from a Git repository.
-
-```bash
-./mcp_manager.py install_git [REPOSITORY_URL] [--name NAME] [--branch BRANCH]
-```
-
-Options:
-- `--name`: Specify a custom name for the server (defaults to repository name)
-- `--branch`: Specify a branch to clone (defaults to main/master)
-- `--subdir`: Specify a subdirectory for repositories containing multiple MCP server configurations
+| Option | Description | Default |
+|--------|-------------|---------|
+| `--name` | Custom name for the server | Repository name |
+| `--branch` | Branch to clone | main/master |
+| `--subdir` | Subdirectory for repositories with multiple MCP configs | Root directory |
 
 Example:
 ```bash
-./mcp_manager.py install_git https://github.com/example/mcp-server --name custom-name --branch develop
-```
-
-### Uninstall Server
-
-Uninstall a specific MCP server.
-
-```bash
-./mcp_manager.py uninstall [SERVER_NAME]
-```
-
-### Update Registry
-
-Update the local registry cache.
-
-```bash
-./mcp_manager.py update
+./mcp_manager.py install_git https://github.com/example/mcp-server.git --name custom-name --branch develop --subdir packages/mcp
 ```
 
 ## Server Types
