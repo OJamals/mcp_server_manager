@@ -1,6 +1,6 @@
 # MCP Server Manager
 
-A command-line tool for managing Model Context Protocol (MCP) servers for Cursor IDE.
+A command-line tool for managing Model Context Protocol (MCP) servers for Cursor IDE. Offers an intuitive interface to manage MCP servers, and a remote repository with over 50 MCP servers which can be installed with a single click!
 
 ## Overview
 
