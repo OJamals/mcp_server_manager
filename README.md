@@ -1,6 +1,6 @@
-# Cursor MCP Server Manager
+# MCP Server Manager
 
-A command-line tool for managing Model Context Protocol (MCP) servers specifically for Cursor IDE. Access a remote repository with over 50 MCP servers which can be installed with one click. 
+A command-line tool for managing Model Context Protocol (MCP) servers specifically for Cursor IDE.
 
 ## Overview
 
@@ -45,7 +45,6 @@ pip install -r requirements.txt
 
 - Python 3.8+
 - Node.js and npm (for most MCP servers)
-- uv (for some MCP servers)
 - Git (for installing servers from repositories)
 
 ## Basic Usage

@@ -58,9 +58,6 @@ class MCPServerManager:
         """Detect running Cursor MCP servers."""
         mcp_servers = []
         
-        # Print config server names for debugging
-        rprint(f"[dim]DEBUG: Looking for these configured servers: {', '.join(self.config['mcpServers'].keys())}[/dim]")
-        
         for proc in psutil.process_iter(['pid', 'name', 'cmdline', 'connections']):
             try:
                 cmdline = proc.info['cmdline']
@@ -68,15 +65,6 @@ class MCPServerManager:
                     continue
 
                 cmd_str = ' '.join(cmdline)
-                
-                # Debug any node.js process that might be related to our servers
-                if ('node' in cmd_str and 
-                    ('mcp-server' in cmd_str or 
-                     'modelcontextprotocol' in cmd_str or 
-                     'server-' in cmd_str or 
-                     'e2b' in cmd_str or
-                     'smithery' in cmd_str)):
-                    rprint(f"[dim]DEBUG: Found potential MCP server: PID {proc.pid}: {cmd_str[:100]}...[/dim]")
                 
                 # Match against known MCP servers from config
                 for server_name, server_config in self.config['mcpServers'].items():
@@ -98,7 +86,6 @@ class MCPServerManager:
                         except (psutil.AccessDenied, psutil.NoSuchProcess):
                             server_info['working_dir'] = 'N/A'
                         
-                        rprint(f"[dim]DEBUG: Found MCP server: {server_name} (PID: {proc.pid})[/dim]")
                         mcp_servers.append(server_info)
                         break
 
@@ -120,10 +107,6 @@ class MCPServerManager:
         # Extract the server name from server_config
         server_name = next((name for name, config in self.config['mcpServers'].items() 
                           if config == server_config), None)
-                          
-        # Print extended debug for e2b
-        if server_name == 'e2b':
-            rprint(f"[dim]DEBUG: Checking if process is e2b: {cmd_str[:150]}...[/dim]")
         
         # Special cases for known servers
         if server_name == 'filesystem':
@@ -151,7 +134,6 @@ class MCPServerManager:
                 '@e2b/mcp-server',
                 'e2b --config'
             ]):
-                rprint(f"[dim]DEBUG: Found e2b server process: {cmd_str[:100]}...[/dim]")
                 return True
         
         # For all other servers, do a more generic check
@@ -200,15 +182,7 @@ class MCPServerManager:
                     proc = psutil.Process(pid)
                     connections = proc.connections()
                     
-                    # Print debug info
                     cmd_str = ' '.join(proc.cmdline())
-                    rprint(f"[dim]DEBUG: Checking process {pid}: {cmd_str[:50]}...[/dim]")
-                    if connections:
-                        rprint(f"[dim]DEBUG: Process has {len(connections)} connections[/dim]")
-                        for conn in connections:
-                            if conn.status == 'LISTEN':
-                                rprint(f"[dim]DEBUG: Found LISTEN connection on port {conn.laddr.port}[/dim]")
-                                return True
                     
                     # Let's be more permissive for MCP servers that might not have active connections yet
                     # If it's a Node.js process with MCP server or e2b in command, assume it's a server
@@ -217,8 +191,12 @@ class MCPServerManager:
                          'server-' in cmd_str.lower() or 
                          'e2b' in cmd_str or 
                          'smithery' in cmd_str)):
-                        rprint(f"[dim]DEBUG: Process appears to be an MCP server based on command[/dim]")
                         return True
+                        
+                    # Check if process has any listening connections
+                    for conn in connections:
+                        if conn.status == 'LISTEN':
+                            return True
                         
                     return False
                 except (psutil.NoSuchProcess, psutil.AccessDenied):
@@ -230,10 +208,6 @@ class MCPServerManager:
     def list_servers(self):
         """List all Cursor MCP servers (both running and configured)."""
         detected_servers = self.detect_cursor_mcp_servers()
-        
-        # Debug - print detected servers
-        for server in detected_servers:
-            rprint(f"[dim]DEBUG: list_servers detected: {server['name']} (PID: {server['pid']})[/dim]")
         
         table = Table(title="Cursor MCP Servers")
         table.add_column("Name", style="cyan")
@@ -247,12 +221,6 @@ class MCPServerManager:
             status = "Running" if running_server else "Stopped"
             description = config.get('description', 'No description available')
             
-            # Debug - show if server is found as running or not
-            if running_server:
-                rprint(f"[dim]DEBUG: Server '{name}' found as running (PID: {running_server['pid']})[/dim]")
-            else:
-                rprint(f"[dim]DEBUG: Server '{name}' not found as running[/dim]")
-            
             table.add_row(name, status, description)
         
         console.print(table)
@@ -265,11 +233,6 @@ class MCPServerManager:
 
         # Check if already running
         running_servers = self.detect_cursor_mcp_servers()
-        
-        # Debug info
-        rprint(f"[dim]DEBUG: Detected {len(running_servers)} running servers:[/dim]")
-        for server in running_servers:
-            rprint(f"[dim]DEBUG: - {server['name']} (PID: {server['pid']})[/dim]")
             
         if any(s['name'] == server_name for s in running_servers):
             rprint(f"[yellow]Server '{server_name}' is already running[/yellow]")
@@ -277,9 +240,6 @@ class MCPServerManager:
 
         server_config = self.config['mcpServers'][server_name]
         cmd = [server_config['command']] + server_config['args']
-        
-        # Debug info
-        rprint(f"[dim]DEBUG: Starting server with command: {' '.join(cmd)}[/dim]")
 
         try:
             # Start the server in the background
