@@ -109,6 +109,24 @@ Install a server from the registry.
 ./mcp_manager.py install [SERVER_NAME]
 ```
 
+### Install from Git
+
+Install an MCP server directly from a Git repository.
+
+```bash
+./mcp_manager.py install_git [REPOSITORY_URL] [--name NAME] [--branch BRANCH]
+```
+
+Options:
+- `--name`: Specify a custom name for the server (defaults to repository name)
+- `--branch`: Specify a branch to clone (defaults to main/master)
+- `--subdir`: Specify a subdirectory for repositories containing multiple MCP server configurations
+
+Example:
+```bash
+./mcp_manager.py install_git https://github.com/example/mcp-server --name custom-name --branch develop
+```
+
 ### Uninstall Server
 
 Uninstall a specific MCP server.
@@ -144,6 +162,22 @@ The manager reads from Cursor's MCP configuration located at `~/.cursor/mcp.json
 4. Install servers via npm/uv from the registry
 5. Display detailed information about server capabilities
 
+### Git Installation Process
+
+When installing from Git repositories:
+
+1. The repository is cloned to a temporary directory
+2. The tool looks for a valid `package.json` with MCP server configuration
+3. Dependencies are installed using npm/yarn based on available lock files
+4. The server is registered in Cursor's MCP configuration
+5. The server can then be managed like any other MCP server
+
+This allows you to:
+- Install servers not yet published to npm
+- Install specific branches or development versions
+- Install private repositories you have access to
+- Contribute to MCP server development by testing your local changes
+
 ## Requirements
 
 - Python 3.6+
@@ -155,3 +189,8 @@ The manager reads from Cursor's MCP configuration located at `~/.cursor/mcp.json
 - **Permission errors**: Try running with sudo or checking file permissions
 - **Server won't stop**: Use the force option or restart your system
 - **Package not found**: Ensure your registry is up to date with `update` command
+- **Git repository issues**: 
+  - Ensure you have git installed and configured
+  - For private repositories, make sure your SSH keys are set up
+  - If you see "Invalid package.json" errors, verify the repository is an MCP server
+  - Try specifying a specific branch with `--branch` if the default branch fails
