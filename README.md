@@ -1,14 +1,51 @@
 # MCP Server Manager
 
-A command-line tool for managing Model Context Protocol (MCP) servers for Cursor IDE. Offers an intuitive interface to manage MCP servers, and a remote repository with over 50 MCP servers which can be installed with a single click! Verbose logging, to give an idea of what's happening. Many issues and much confusion with MCP stems from lack of contextual awareness. Using this tool keeps you in control of every step of managing your MCP servers!
+A command-line tool for managing Model Context Protocol (MCP) servers specifically for Cursor IDE.
+
+## Overview
+
+MCP Server Manager simplifies the installation, configuration, and management of servers that extend Cursor IDE's capabilities. These servers implement the Model Context Protocol (MCP), which allows Claude and other AI assistants to access additional functionality such as:
+
+- File system operations
+- Knowledge graph and memory management
+- Structured thinking processes
+- Secure code execution
+- Web search and content extraction
+- Web browser automation
+- Database integration
+- And many more specialized tools
+
+## Table of Contents
+
+- [Installation](#installation)
+- [Basic Usage](#basic-usage)
+- [Commands](#commands)
+  - [Managing Servers](#managing-servers)
+  - [Installation & Registry](#installation--registry)
+  - [Advanced Installation](#advanced-installation)
+- [Server Types](#server-types)
+- [Configuration](#configuration)
+- [Troubleshooting](#troubleshooting)
+- [Advanced Usage](#advanced-usage)
+- [Development](#development)
+- [License](#license)
 
 ## Installation
 
 ```bash
+# Clone the repository
 git clone https://github.com/yourusername/mcp-server-manager.git
 cd mcp-server-manager
+
+# Install required dependencies
 pip install -r requirements.txt
 ```
+
+### Requirements
+
+- Python 3.8+
+- Node.js and npm (for most MCP servers)
+- Git (for installing servers from repositories)
 
 ## Basic Usage
 
@@ -23,13 +60,16 @@ python mcp_manager.py list
 python mcp_manager.py available
 
 # Install a server from the registry
-python mcp_manager.py install <server-name> // uninstall
+python mcp_manager.py install <server-name>
 
 # Start a server
-python mcp_manager.py start <server-name> // start_all
+python mcp_manager.py start <server-name>
 
 # Stop a server
-python mcp_manager.py stop <server-name> // stop_all
+python mcp_manager.py stop <server-name>
+
+# View server's available functions
+python mcp_manager.py functions <server-name>
 ```
 
 ## Commands
@@ -74,36 +114,123 @@ python mcp_manager.py install_git https://github.com/example/my-mcp-server.git -
 
 ## Server Types
 
-MCP servers extend Cursor's capabilities in various ways:
+MCP servers extend Cursor's capabilities in various domains:
 
-- **filesystem**: File and directory operations
-- **memory**: Knowledge graph and memory management
-- **sequential-thinking**: Advanced problem-solving through structured thinking
-- **e2b**: Code execution in secure sandboxes
-- **tavily**: Web search and content extraction
-- **neo4j**: Database interaction and graph queries
-- Over 50 ready-to-install servers available on the registry! Access the registry here: https://github.com/OJamals/mcp-registry
+| Type | Description | Examples |
+|------|-------------|----------|
+| **filesystem** | File and directory operations | Reading, writing files, directory management |
+| **memory** | Knowledge graph management | Entity creation, relationships, observations |
+| **sequential-thinking** | Structured problem-solving | Breaking down complex problems, iterative analysis |
+| **e2b** | Secure code execution | Running Python code in sandbox environments |
+| **tavily** | Web search capabilities | Real-time search, content extraction |
+| **database** | Database interactions | PostgreSQL, SQLite, Redis, Neo4j |
+| **cloud services** | Cloud provider integrations | AWS, Google Drive, GitHub, GitLab |
+| **AI tools** | AI-powered utilities | Image generation, UI creation |
 
 ## Configuration
 
-The tool manages configuration in `~/.cursor/mcp.json`, which stores information about installed servers.
+The tool manages configuration in `~/.cursor/mcp.json`, which stores information about installed servers including:
+
+- Server name and description
+- Command and arguments to start the server
+- Required environment variables
+- Installation details
+
+Example configuration entry:
+```json
+{
+  "mcpServers": {
+    "filesystem": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem"],
+      "description": "Provides an API for filesystem operations"
+    }
+  }
+}
+```
 
 ## Troubleshooting
 
-- If a server fails to start, check that all required environment variables are set
-- For git installations, ensure you have proper permissions and git is installed
-- Use `python mcp_manager.py functions <name>` to verify a server's available functionality
-- Check that npm/node.js is properly installed on your system
+Common issues and solutions:
+
+- **Server fails to start**
+  - Check that all required environment variables are set
+  - Verify Node.js and npm are properly installed
+  - Look for error messages in the terminal output
+
+- **Registry commands fail**
+  - Run `python mcp_manager.py update` to refresh the registry cache
+  - Check your internet connection
+  - If `python mcp_manager.py available` fails with an `IndexError`, try updating the registry or check package naming in the registry
+
+- **Git installation issues**
+  - Ensure git is installed and accessible in your PATH
+  - Verify you have proper permissions for the repository
+  - Check that the repository structure matches your configuration options
+
+- **Server detection problems**
+  - Use `python mcp_manager.py list` to verify the server's status
+  - Try stopping and restarting the server
+  - Check that the server process hasn't been terminated unexpectedly
+
+- **EVERYTHING else**
+  - Restart Cursor
 
 ## Advanced Usage
 
-```bash
-# Start a server and verify its functions
-python mcp_manager.py start filesystem
-python mcp_manager.py functions filesystem
+### Using Multiple Servers Together
 
-# Update registry and install a new server
-python mcp_manager.py update
-python mcp_manager.py available
+```bash
+# Start the core servers used by Claude
+python mcp_manager.py start filesystem
+python mcp_manager.py start memory
+python mcp_manager.py start sequential-thinking
+
+# Start a web search capability
 python mcp_manager.py install tavily
+python mcp_manager.py start tavily-mcp
 ```
+
+### Environment Variables for Servers
+
+Many servers require API keys or other environment variables: The install command will prompt for the required variables, but you can always update the variables as follows:
+
+```bash
+# Example for setting up Tavily search server
+export TAVILY_API_KEY="your-api-key-here"
+python mcp_manager.py start tavily-mcp
+
+# Example for setting up E2B code execution
+export E2B_API_KEY="your-e2b-api-key"
+python mcp_manager.py start e2b
+```
+
+## Development
+
+### Project Structure
+
+- `mcp_manager.py` - Main implementation of the MCP Server Manager
+- `server_registry.py` - Handles fetching and managing the server registry
+- `registry.json` - Local cache of available MCP servers
+- `requirements.txt` - Python dependencies
+
+### Creating a Command Alias (Optional)
+
+If you want to use a shorter command, you can create an alias in your shell:
+
+```bash
+# For bash/zsh, add to your .bashrc or .zshrc:
+alias mcp='python /path/to/mcp-server-manager/mcp_manager.py'
+
+# Then you can use simpler commands like:
+mcp list
+mcp start filesystem
+```
+
+### Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## License
+
+[MIT License](LICENSE)
