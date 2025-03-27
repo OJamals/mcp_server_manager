@@ -1,6 +1,6 @@
 # MCP Server Manager
 
-A command-line tool for managing Model Context Protocol (MCP) servers for Cursor IDE. Offers an intuitive interface to manage MCP servers, and a remote repository with over 50 MCP servers which can be installed with a single click! Pure python with debug code purposely left in, to give an idea of what's happening. So many of the issues and confusion with MCP is lack of contextual awareness. Using this tool to manage and test your MCP servers helps overcome that!
+A command-line tool for managing Model Context Protocol (MCP) servers for Cursor IDE. Offers an intuitive interface to manage MCP servers, and a remote repository with over 50 MCP servers which can be installed with a single click! Verbose logging, to give an idea of what's happening. Many issues and much confusion with MCP stems from lack of contextual awareness. Using this tool keeps you in control of every step of managing your MCP servers!
 
 ## Installation
 
