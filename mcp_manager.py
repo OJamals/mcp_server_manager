@@ -405,10 +405,10 @@ class MCPServerManager:
         
         for server in servers:
             table.add_row(
-                server['name'],
-                server['description'],
-                server['version'],
-                server['author']
+                server.get('name', 'Unknown'),
+                server.get('description', 'No description'),
+                server.get('version', 'N/A'),
+                server.get('author', 'Unknown')
             )
         
         console.print(table)
