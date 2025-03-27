@@ -45,6 +45,7 @@ pip install -r requirements.txt
 
 - Python 3.8+
 - Node.js and npm (for most MCP servers)
+- uv (for some MCP servers)
 - Git (for installing servers from repositories)
 
 ## Basic Usage
