@@ -141,21 +141,15 @@ The manager reads from Cursor's MCP configuration located at `~/.cursor/mcp.json
 1. Detect running MCP server processes
 2. Start servers using their configured commands
 3. Safely terminate running servers
-4. Install servers via npm from the registry
+4. Install servers via npm/uv from the registry
 5. Display detailed information about server capabilities
 
 ## Requirements
 
 - Python 3.6+
 - npm & uv (for installing/uninstalling servers)
-- Required Python packages:
-  - psutil
-  - rich
-  - click
-  - requests
-  - pyyaml
 
-## Troubleshooting - Always RESTART CURSOR before troubleshooting!
+## Troubleshooting - Always RESTART CURSOR before anything!
 
 - **Server won't start**: Ensure npm is installed and in your PATH
 - **Permission errors**: Try running with sudo or checking file permissions
